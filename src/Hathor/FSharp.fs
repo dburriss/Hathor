@@ -68,6 +68,9 @@ module CodeElement =
         let relationship = Relationship.create desc (idFrom,idTo) []
         codeElement |> addRelationship relationship
 
+    let addTag (tag:Tag) (codeElement:CodeElement) =
+        {codeElement with Tags = codeElement.Tags.Add(tag)}
+
 module Component =
 
     let create id name desc tech =
@@ -90,6 +93,9 @@ module Component =
         let relationship = Relationship.create desc (idFrom,idTo) []
         comp |> addRelationship relationship
 
+    let addTag (tag:Tag) (``component``:Component) =
+        {``component`` with Tags = ``component``.Tags.Add(tag)}
+
 module Container =
 
     let create id name desc tech =
@@ -111,6 +117,9 @@ module Container =
     let addRelationshipLink (idFrom:string) (desc:string) (idTo:string) (container:Container) =
         let relationship = Relationship.create desc (idFrom,idTo) []
         container |> addRelationship relationship
+
+    let addTag (tag:Tag) (container:Container) =
+        {container with Tags = container.Tags.Add(tag)}
 
 module SoftwareSystem =
 
@@ -135,6 +144,9 @@ module SoftwareSystem =
         let relationship = Relationship.create desc (idFrom,idTo) []
         sys |> addRelationship relationship
 
+    let addTag (tag:Tag) (sys:SoftwareSystem) =
+        {sys with Tags = sys.Tags.Add(tag)}
+
 module Landscape =
     let create id name desc lbls =
         let l : Landscape = 
@@ -155,3 +167,6 @@ module Landscape =
     let addRelationshipLink (idFrom:string) (desc:string) (idTo:string) (landscape:Landscape) =
         let relationship = Relationship.create desc (idFrom,idTo) []
         landscape |> addRelationship relationship
+
+    let addTag (tag:Tag) (landscape:Landscape) =
+        {landscape with Tags = landscape.Tags.Add(tag)}
