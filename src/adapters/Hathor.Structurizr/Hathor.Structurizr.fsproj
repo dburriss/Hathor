@@ -5,12 +5,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Library.fs" />
+    <Compile Include="Update.fs" />
+    <Compile Include="Model.fs" />
+    <Compile Include="Diagram.fs" />
+    <Compile Include="DSL.fs" />
     <Compile Include="Json.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Hathor\Hathor.fsproj" />
   </ItemGroup>
 
 </Project>

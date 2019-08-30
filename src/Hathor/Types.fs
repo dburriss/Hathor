@@ -11,7 +11,7 @@ type Relationship = {
     Tags : Tag Set
 }
     
-type Person = {
+type User = {
     Id : string
     Name : string
     Description : string

@@ -4,6 +4,9 @@ open Hathor
 
 module Tag =
     let create s = Tag s
+    let single s = [s] |> Set.ofList
+    let ssingle s = [Tag s] |> Set.ofList
+    let none = Set.empty
     let kv k v = Tag (sprintf "%s:%s" k v)
     let split (Tag s) = 
         if(s.Contains(":")) then
@@ -11,6 +14,12 @@ module Tag =
             let v = arr |> Array.tail |> fun ss -> ss |> String.concat ":"
             (arr.[0],arr.[1])
         else (s,"")
+    let toString (Tag s) = s
+    let ofList (ts : Tag list) = ts |> Set.ofList
+    let toList (ts : Set<Tag>) = ts |> Set.toList
+
+    let Person = Tag "Person"
+    let System = Tag "System"
 
 module Relationship =
     
@@ -20,31 +29,31 @@ module Relationship =
                 Description = desc
                 Between = between
                 Technology = tech |> Set.ofList
-                Tags = Set.empty
+                Tags = Tag.none
             }
         r
 
-module Person =
-    let create id name desc loc =
-        let p : Person = 
+module User =
+    let create id name desc tags loc =
+        let p : User = 
             {
                 Id = id
                 Name = name
                 Description = desc
                 Location = loc
                 Relationships = Set.empty
-                Tags = Set.empty
+                Tags = tags
             }
         p
 
-    let addRelationship (relationship:Relationship) (person:Person) =
+    let addRelationship (relationship:Relationship) (person:User) =
         {person with Relationships = person.Relationships.Add(relationship)}
 
-    let addRelationshipLink (idFrom:string) (desc:string) (idTo:string) (person:Person) =
+    let addRelationshipLink (idFrom:string) (desc:string) (idTo:string) (person:User) =
         let relationship = Relationship.create desc (idFrom,idTo) []
         person |> addRelationship relationship
 
-    let addTag (tag:Tag) (person:Person) =
+    let addTag (tag:Tag) (person:User) =
         {person with Tags = person.Tags.Add(tag)}
 
 module CodeElement =
@@ -57,7 +66,7 @@ module CodeElement =
                 Description = desc
                 FullTypeName = fulltype
                 Relationships = Set.empty
-                Tags = Set.empty 
+                Tags = Tag.none
             }
         c
 
@@ -82,7 +91,7 @@ module Component =
                 Technology = tech
                 CodeElements = Set.empty
                 Relationships = Set.empty
-                Tags = Set.empty
+                Tags = Tag.none
             }
         c
 
@@ -107,7 +116,7 @@ module Container =
                 Technology = tech
                 Components = []
                 Relationships = Set.empty
-                Tags = Set.empty 
+                Tags = Tag.none
             }
         c
 
@@ -129,11 +138,11 @@ module SoftwareSystem =
                 Id = id
                 Name = name
                 Description = desc
-                Labels = lbls |> Set.ofList
+                Labels = lbls
                 Location = loc
                 Containers = []
                 Relationships = Set.empty
-                Tags = Set.empty 
+                Tags = Tag.none
             }
         s
 
@@ -157,7 +166,7 @@ module Landscape =
                 Labels = lbls
                 Systems = []
                 Relationships = Set.empty
-                Tags = Set.empty 
+                Tags = Tag.none
             }
         l                           
 

@@ -1,76 +1,79 @@
 ﻿namespace Hathor.Structurizr
 
+type JComponent = {
+    Type:string
+    Name:string
+    Description:string
+    Technology:string
+    Tags:string
+    Position:string
+}
+
+type JContainer = {
+    Type:string
+    Name:string
+    Description:string
+    Technology:string
+    Tags:string
+    Position:string
+    Components: JComponent[]
+}
+
+type JElement = {
+    Type:string
+    Name:string
+    Description:string
+    Tags:string
+    Position:string
+    Containers: JContainer[]
+}
+
+type JRelationship = {
+    Source:string
+    Description:string
+    Technology:string
+    Destination:string
+    Tags:string
+    Order:string
+    Vertices:string[]
+}
+
+type JStyle = {
+    Type:string
+    Description:string
+    Tag:string
+    Width:string
+    Height:string
+    Background:string
+    Color:string
+    FontSize:string
+    Opacity:string
+    Shape:string
+    Routing:string
+    Dashed:string
+    Metadata:string
+}
+
+type JSystemLandscape = {
+    Type:string
+    Scope:string
+    Description:string
+    Size:string
+    Elements:JElement[]
+    Relationships:JRelationship[]
+    Styles:JStyle[]
+}
+
 [<RequireQualifiedAccess>]
 module Json =
     open Newtonsoft.Json
     open Newtonsoft.Json.Serialization
     open Microsoft.FSharp.Reflection
-
-    type JComponent = {
-        Type:string
-        Name:string
-        Description:string
-        Technology:string
-        Tags:string
-        Position:string
-    }
-
-    type JContainer = {
-        Type:string
-        Name:string
-        Description:string
-        Technology:string
-        Tags:string
-        Position:string
-        Components: JComponent[]
-    }
-
-    type JElement = {
-        Type:string
-        Name:string
-        Description:string
-        Tags:string
-        Position:string
-        Containers: JContainer[]
-    }
-
-    type JRelationship = {
-        Source:string
-        Description:string
-        Technology:string
-        Destination:string
-        Tags:string
-        Order:string
-        Vertices:string[]
-    }
-
-    type JStyle = {
-        Type:string
-        Description:string
-        Tag:string
-        Width:string
-        Height:string
-        Background:string
-        Color:string
-        FontSize:string
-        Opacity:string
-        Shape:string
-        Routing:string
-        Dashed:string
-        Metadata:string
-    }
-
-    type JSystemLandscape = {
-        Type:string
-        Scope:string
-        Description:string
-        Size:string
-        Elements:JElement[]
-        Relationships:JRelationship[]
-        Styles:JStyle[]
-    }
-
+    open Hathor
+    open Hathor.FSharp
+    
     let private toString (x:'a) = 
+        //printfn "%s" (typeof<'a>).Name
         match FSharpValue.GetUnionFields(x, typeof<'a>) with
         | case, _ -> case.Name
 
@@ -86,7 +89,7 @@ module Json =
     
     let private tagsToString (tags:Tag list) = 
         if(tags |> List.isEmpty) then "" 
-        else tags |> List.fold (fun r s -> r + s + ",") ""
+        else tags |> List.fold (fun r s -> r + (s |> Tag.toString) + ",") ""
 
     let private userElToJElement (userEl:UserElement) : JElement =
         {
@@ -98,7 +101,7 @@ module Json =
             Containers = [||]
         }
 
-    let private toJRelationship (r:Relationship) : JRelationship =
+    let private toJRelationship (r:RelationshipType) : JRelationship =
         {
             Source = r.Source |> Element.name
             Description = r.Description
@@ -115,7 +118,7 @@ module Json =
             {
                 Type = "element"
                 Description = "true"
-                Tag = s.Tag
+                Tag = s.Tag |> Tag.toString
                 Width = s.Width |> intToString
                 Height = s.Height |> intToString
                 Background = s.Background
@@ -131,7 +134,7 @@ module Json =
             {
                 Type = "element"
                 Description = "true"
-                Tag = s.Tag
+                Tag = s.Tag |> Tag.toString
                 Width = s.Width |> intToString
                 Height = s.Height |> intToString
                 Background = null
@@ -166,10 +169,10 @@ module Json =
                 }
             | SystemViewElement.User x -> 
                 match x with
-                | User.DesktopApp y -> userElToJElement y
-                | User.Mobile y -> userElToJElement y
-                | User.Person y -> userElToJElement y
-                | User.WebBrowser y -> userElToJElement y
+                | UserType.DesktopApp y -> userElToJElement y
+                | UserType.Mobile y -> userElToJElement y
+                | UserType.Person y -> userElToJElement y
+                | UserType.WebBrowser y -> userElToJElement y
 
         let data : JSystemLandscape = {
             Type = "System Landscape"

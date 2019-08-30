@@ -8,8 +8,7 @@ namespace Hathor.TryApiInCSharp
         [Fact]
         public void APerson()
         {
-            var person = A.Person("a-person", "A person", "A description", Location.Internal);
-
+            //var person = A.Person("a-person", "A person", "A description", Location.Internal);
             
         }
     }
